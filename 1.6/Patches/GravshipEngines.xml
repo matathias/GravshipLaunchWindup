@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+  <!-- Base GravEngine -->
+  <Operation Class="PatchOperationReplace">
+    <xpath>Defs/ThingDef[defName="GravEngine"]/thingClass</xpath>
+    <value>
+      <thingClass>Building_GravEngineWithWindup</thingClass>
+    </value>
+  </Operation>
+    <!-- Vanilla Gravships Extended Compatibility -->
+    <Operation Class="PatchOperationFindMod">
+        <mods>
+            <li>Vanilla Gravship Expanded - Chapter 1</li>
+        </mods>
+        <match Class="PatchOperationSequence">
+            <operations>
+                <li Class="PatchOperationReplace">
+					<xpath>Defs/ThingDef[defName="VGE_GravjumperEngine"]/thingClass</xpath>
+					<value>
+					  <thingClass>Building_GravEngineWithWindup</thingClass>
+					</value>
+                </li>
+                <li Class="PatchOperationReplace">
+					<xpath>Defs/ThingDef[defName="VGE_GravhulkEngine"]/thingClass</xpath>
+					<value>
+					  <thingClass>Building_GravEngineWithWindup</thingClass>
+					</value>
+                </li>
+            </operations>
+        </match>
+    </Operation>
+
+</Patch>

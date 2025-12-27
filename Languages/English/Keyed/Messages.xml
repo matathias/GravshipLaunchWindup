@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+  <glwBeginStartupMessage>GravLaunch Warm-up Sequence Initiated. Time to launch window: {0}</glwBeginStartupMessage>
+  
+  <glwCompleteStartupMessage>GravLaunch Warm-up Sequence Complete. Launch window: {0}</glwCompleteStartupMessage>
+  
+  <glwLaunchTimersResetMessage>GravLaunch window expired.</glwLaunchTimersResetMessage>
+  
+  <glwWindupNotStarted>Grav Engine has not been warmed up. Select the engine to initiate Warm-Up.</glwWindupNotStarted>
+  <glwWindupNotComplete>GravLaunch warm-up has not completed. Your launch window is in {0}.</glwWindupNotComplete>
+  
+</LanguageData>

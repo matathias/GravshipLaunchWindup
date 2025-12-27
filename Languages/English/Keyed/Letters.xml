@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <glwCompleteStartupLetterLabel>GravLaunch Warm-up Sequence Complete</glwCompleteStartupLetterLabel>
+  <glwCompleteStartupLetterDesc>Your launch window closes in {0}.\n\nIf you do not launch before the end of the launch window, then you will have to complete the warm-up sequence again.</glwCompleteStartupLetterDesc>
+  
+  <glwLaunchTimersResetLabel>GravLaunch Window Expired</glwLaunchTimersResetLabel>
+  <glwLaunchTimersResetDesc>Your launch window expired. You will need to complete the warm-up sequence again in order to launch.</glwLaunchTimersResetDesc>
+</LanguageData>
