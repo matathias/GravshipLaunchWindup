@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-	<name>Gravship Launch Windup</name>
+	<name>GravLaunch Startup</name>
 	<author>Matathias</author>
 	<supportedVersions>
 		<li>1.6</li>
@@ -24,8 +24,10 @@
 		<li>brrainz.harmony</li>
 		<li>vanillaexpanded.gravship</li>
 	</loadAfter>
-	<description>Changes gravship launches to require a windup period before you can launch. After windup, you have a small window to perform the launch, after which you will have to trigger the windup process again.
+	<description>Changes gravship launches to require a startup period before you can launch. After startup, you have a small window to perform the launch, after which you will have to trigger the startup process again.
 	
-With this windup, launching a gravship is no longer a consequence-free eject button.
+With this startup, launching a gravship is no longer a consequence-free eject button.
+
+Compatible with Vanilla Gravships Expanded.
 	</description>
 </ModMetaData>
