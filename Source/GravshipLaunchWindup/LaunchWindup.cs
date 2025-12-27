@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ using Verse.AI;
 
 namespace GravshipLaunchWindup
 {
+    [StaticConstructorOnStartup]
     public class Building_GravEngineWithWindup : Building_GravEngine
     {
         public enum StartupPhase
@@ -32,6 +34,23 @@ namespace GravshipLaunchWindup
             Scribe_Values.Look(ref LaunchTimeoutTick, "launchtimeouttick", -1);
         }
 
+        public AcceptanceReport CanUseNow()
+        {
+            if (phase == StartupPhase.Dormant && cooldownCompleteTick > Find.TickManager.TicksGame)
+            {
+                return new AcceptanceReport("CommandGLWWindupDescOnCooldown".Translate());
+            }
+            else if (phase == StartupPhase.Starting)
+            {
+                return new AcceptanceReport("CommandGLWWindupDescStartingUp".Translate((WindupCompletionTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)));
+            }
+            else if (phase == StartupPhase.Started)
+            {
+                return new AcceptanceReport("CommandGLWWindupDescStartedUp".Translate((LaunchTimeoutTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)));
+            }
+            return AcceptanceReport.WasAccepted;
+        }
+
         public override IEnumerable<Gizmo> GetGizmos()
         {
             foreach (Gizmo gizmo in base.GetGizmos())
@@ -42,46 +61,24 @@ namespace GravshipLaunchWindup
             {
                 yield break;
             }
-            if (phase == StartupPhase.Dormant && cooldownCompleteTick > Find.TickManager.TicksGame)
+
+            Command_Action command_action = new Command_Action
             {
-                yield return new Command_Action
+                defaultLabel = "CommandGLWWindup".Translate(this),
+                defaultDesc = "CommandGLWWindupDesc".Translate(),
+                icon = WindupCommandTex,
+                action = delegate
                 {
-                    defaultLabel = "CommandGLWWindup".Translate(this),
-                    defaultDesc = "CommandGLWWindupDescOnCooldown".Translate(),
-                    icon = WindupCommandTex
-                };
-            }
-            else if (phase == StartupPhase.Dormant)
+                    BeginStartup();
+                }
+            };
+            AcceptanceReport acceptanceReport = CanUseNow();
+            if (!acceptanceReport.Accepted)
             {
-                yield return new Command_Action
-                {
-                    defaultLabel = "CommandGLWWindup".Translate(this),
-                    defaultDesc = "CommandGLWWindupDesc".Translate(),
-                    icon = WindupCommandTex,
-                    action = delegate
-                    {
-                        BeginStartup();
-                    }
-                };
+                command_action.Disable(acceptanceReport.Reason);
             }
-            else if (phase == StartupPhase.Starting)
-            {
-                yield return new Command_Action
-                {
-                    defaultLabel = "CommandGLWWindup".Translate(this),
-                    defaultDesc = "CommandGLWWindupDescStartingUp".Translate((WindupCompletionTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)),
-                    icon = WindupCommandTex
-                };
-            }
-            else if (phase == StartupPhase.Started)
-            {
-                yield return new Command_Action
-                {
-                    defaultLabel = "CommandGLWWindup".Translate(this),
-                    defaultDesc = "CommandGLWWindupDescStartedUp".Translate((LaunchTimeoutTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)),
-                    icon = WindupCommandTex
-                };
-            }
+            yield return command_action;
+
             if (DebugSettings.ShowDevGizmos)
             {
                 yield return new Command_Action
@@ -116,9 +113,10 @@ namespace GravshipLaunchWindup
                 return;
             }
             phase = StartupPhase.Starting;
-            WindupCompletionTick = Find.TickManager.TicksGame + GLWSettings.winduptime;
+            int winduptime = GetWindupTime();
+            WindupCompletionTick = Find.TickManager.TicksGame + winduptime;
 
-            Messages.Message("glwBeginStartupMessage".Translate((GLWSettings.winduptime).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)), MessageTypeDefOf.NeutralEvent);
+            Messages.Message("glwBeginStartupMessage".Translate((winduptime).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)), MessageTypeDefOf.NeutralEvent);
         }
 
         private void CompleteStartup(bool force = false)
@@ -134,15 +132,16 @@ namespace GravshipLaunchWindup
                 return;
             }
             phase = StartupPhase.Started;
-            LaunchTimeoutTick = Find.TickManager.TicksGame + GLWSettings.launchwindow;
+            int launchwindow = GetLaunchWindow();
+            LaunchTimeoutTick = Find.TickManager.TicksGame + launchwindow;
 
             if (GLWSettings.sendLetters)
             {
-                Find.LetterStack.ReceiveLetter("glwCompleteStartupLetterLabel".Translate(), "glwCompleteStartupLetterDesc".Translate((GLWSettings.launchwindow).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)), LetterDefOf.PositiveEvent);
+                Find.LetterStack.ReceiveLetter("glwCompleteStartupLetterLabel".Translate(), "glwCompleteStartupLetterDesc".Translate((launchwindow).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)), LetterDefOf.PositiveEvent);
             }
             else
             {
-                Messages.Message("glwCompleteStartupMessage".Translate((GLWSettings.launchwindow).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)), MessageTypeDefOf.NeutralEvent);
+                Messages.Message("glwCompleteStartupMessage".Translate((launchwindow).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)), MessageTypeDefOf.NeutralEvent);
             }
         }
 
@@ -176,6 +175,65 @@ namespace GravshipLaunchWindup
             {
                 LaunchTimersReset(true);
             }
+        }
+
+        private int GetWindupTime()
+        {
+            int winduptime = 0;
+            if (GLWSettings.VGEActive)
+            {
+                if (def.defName == "VGE_GravjumperEngine")
+                {
+                    winduptime = GLWSettings.winduptime_jumper * GenDate.TicksPerHour;
+                }
+                else if (def.defName == "GravEngine")
+                {
+                    winduptime = GLWSettings.winduptime * GenDate.TicksPerHour;
+                }
+                else if (def.defName == "VGE_GravhulkEngine")
+                {
+                    winduptime = GLWSettings.winduptime_hulk * GenDate.TicksPerHour;
+                }
+                else
+                {
+                    DebugUtility.DebugLog("VGE detected as active, but could not resolve grav engine defName. Using default winduptime", LogMessageType.Warning);
+                    winduptime = GLWSettings.winduptime * GenDate.TicksPerHour;
+                }
+            }
+            else
+            {
+                winduptime = GLWSettings.winduptime * GenDate.TicksPerHour;
+            }
+            return winduptime;
+        }
+        private int GetLaunchWindow()
+        {
+            int launchwindow = 0;
+            if (GLWSettings.VGEActive)
+            {
+                if (def.defName == "VGE_GravjumperEngine")
+                {
+                    launchwindow = GLWSettings.launchwindow_jumper * GenDate.TicksPerHour;
+                }
+                else if (def.defName == "GravEngine")
+                {
+                    launchwindow = GLWSettings.launchwindow * GenDate.TicksPerHour;
+                }
+                else if (def.defName == "VGE_GravhulkEngine")
+                {
+                    launchwindow = GLWSettings.launchwindow_hulk * GenDate.TicksPerHour;
+                }
+                else
+                {
+                    DebugUtility.DebugLog("VGE detected as active, but could not resolve grav engine defName. Using default launchwindow", LogMessageType.Warning);
+                    launchwindow = GLWSettings.launchwindow * GenDate.TicksPerHour;
+                }
+            }
+            else
+            {
+                launchwindow = GLWSettings.launchwindow * GenDate.TicksPerHour;
+            }
+            return launchwindow;
         }
     }
 }

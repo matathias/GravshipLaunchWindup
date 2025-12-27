@@ -23,20 +23,23 @@ namespace GravshipLaunchWindup
     {
         private static void Postfix(CompPilotConsole console, ref AcceptanceReport __result, Building_GravEngine __instance)
         {
-            if (__instance is Building_GravEngineWithWindup engineW)
+            if (__result == AcceptanceReport.WasAccepted)
             {
-                if (engineW.phase == Building_GravEngineWithWindup.StartupPhase.Dormant)
+                if (__instance is Building_GravEngineWithWindup engineW)
                 {
-                    __result = new AcceptanceReport("glwWindupNotStarted".Translate());
+                    if (engineW.phase == Building_GravEngineWithWindup.StartupPhase.Dormant)
+                    {
+                        __result = new AcceptanceReport("glwWindupNotStarted".Translate());
+                    }
+                    else if (engineW.phase == Building_GravEngineWithWindup.StartupPhase.Starting)
+                    {
+                        __result = new AcceptanceReport("glwWindupNotComplete".Translate((engineW.WindupCompletionTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)));
+                    }
                 }
-                else if (engineW.phase == Building_GravEngineWithWindup.StartupPhase.Starting)
+                else
                 {
-                    __result = new AcceptanceReport("glwWindupNotComplete".Translate((engineW.WindupCompletionTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)));
+                    DebugUtility.DebugLog("CanLaunch Postfix called on non-windup gravengine");
                 }
-            }
-            else
-            {
-                DebugUtility.DebugLog("CanLaunch Postfix called on non-windup gravengine");
             }
         }
     }

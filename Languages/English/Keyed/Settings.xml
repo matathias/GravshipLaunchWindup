@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <glwwinduptimejumper>Length of warm-up sequence in hours for GravJumpers</glwwinduptimejumper>
+  <glwlaunchwindowjumper>Length of gravlaunch window in hours for GravJumpers</glwlaunchwindowjumper>
+  <glwwinduptime>Length of warm-up sequence in hours for GravShips</glwwinduptime>
+  <glwlaunchwindow>Length of gravlaunch window in hours for GravShips</glwlaunchwindow>
+  <glwwinduptimehulk>Length of warm-up sequence in hours for GravHulks</glwwinduptimehulk>
+  <glwlaunchwindowhulk>Length of gravlaunch window in hours for GravHulks</glwlaunchwindowhulk>
+  <glwsendLetters>Send letters when warm-up sequence finishes or when launch window closes</glwsendLetters>
+  <glwshowAlerts>Show alerts for warm-up sequence and launch window</glwshowAlerts>
+  <glwprintDebug>Enable debug logging</glwprintDebug>
+</LanguageData>
