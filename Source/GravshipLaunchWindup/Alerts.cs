@@ -91,4 +91,21 @@ namespace GravshipLaunchWindup
             return "glwAlertLaunchWindowDesc".Translate();
         }
     }
+    public class Alert_EnginePostLaunchCooldownWindow : Alert_GravEngineLaunchStartup
+    {
+        public int CooldownTick => gravEngine?.WindupCooldownTick ?? 0;
+        public override AlertReport GetReport()
+        {
+            if (!GLWSettings.showAlerts || gravEngine == null || gravEngine.phase != Building_GravEngineWithWindup.StartupPhase.Cooldown)
+            {
+                return AlertReport.Inactive;
+            }
+            return AlertReport.Active;
+        }
+
+        public override string GetLabel()
+        {
+            return "glwAlertCooldown".Translate() + ": " + (CooldownTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false);
+        }
+    }
 }

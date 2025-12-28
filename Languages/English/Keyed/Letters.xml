@@ -3,6 +3,13 @@
   <glwCompleteStartupLetterLabel>GravLaunch Warm-up Sequence Complete</glwCompleteStartupLetterLabel>
   <glwCompleteStartupLetterDesc>Your launch window closes in {0}.\n\nIf you do not launch before the end of the launch window, then you will have to complete the warm-up sequence again.</glwCompleteStartupLetterDesc>
   
-  <glwLaunchTimersResetLabel>GravLaunch Window Expired</glwLaunchTimersResetLabel>
-  <glwLaunchTimersResetDesc>Your launch window expired. You will need to complete the warm-up sequence again in order to launch.</glwLaunchTimersResetDesc>
+  <glwMissedLaunchLetterLabel>Missed GravLaunch Window</glwMissedLaunchLetterLabel>
+  <glwMissedLaunchLetterDesc>You have missed your launch window. The grav engine will now need to cool off for {0} before you can initiate the warm-up sequence again.</glwMissedLaunchLetterDesc>
+  <glwMissedLaunchLetterDesc2>You have missed your launch window. You will need to complete the warm-up sequence again before you can launch.</glwMissedLaunchLetterDesc2>
+  
+  <glwEjectedLaunchLetterLabel>Aborted GravLaunch Warm-up</glwEjectedLaunchLetterLabel>
+  <glwEjectedLaunchLetterDesc>You have aborted a gravlaunch warm-up sequence. The grav engine will now need to cool off for {0} before you can initiate the warm-up sequence again.</glwEjectedLaunchLetterDesc>
+  
+  <glwLaunchTimersResetLabel>Post-GravLaunch Cooldown</glwLaunchTimersResetLabel>
+  <glwLaunchTimersResetDesc>Your grav engine has finished cooling down after a missed launch window. You can now initiate the warm-up sequence again.</glwLaunchTimersResetDesc>
 </LanguageData>

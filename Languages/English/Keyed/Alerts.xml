@@ -3,4 +3,6 @@
   <glwAlertStartupSequence>Time to GravLaunch Window</glwAlertStartupSequence>
   <glwAlertLaunchWindow>Active GravLaunch Window</glwAlertLaunchWindow>
   <glwAlertLaunchWindowDesc>Initiate GravLaunch before this window closes, or you will have to complete the warm-up sequence again.</glwAlertLaunchWindowDesc>
+  
+  <glwAlertCooldown>Grav Engine Cooldown</glwAlertCooldown>
 </LanguageData>

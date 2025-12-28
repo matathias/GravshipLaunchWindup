@@ -35,10 +35,14 @@ namespace GravshipLaunchWindup
                     {
                         __result = new AcceptanceReport("glwWindupNotComplete".Translate((engineW.WindupCompletionTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)));
                     }
+                    else if (engineW.phase == Building_GravEngineWithWindup.StartupPhase.Cooldown)
+                    {
+                        __result = new AcceptanceReport("glwWindupOnCooldown".Translate((engineW.WindupCooldownTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)));
+                    }
                 }
                 else
                 {
-                    DebugUtility.DebugLog("CanLaunch Postfix called on non-windup gravengine");
+                    DebugUtility.DebugLog("CanLaunch Postfix called on non-windup gravengine", LogMessageType.Warning);
                 }
             }
         }
@@ -54,7 +58,7 @@ namespace GravshipLaunchWindup
             }
             else
             {
-                DebugUtility.DebugLog("ConsumeFuel Postfix called on non-windup gravengine");
+                DebugUtility.DebugLog("ConsumeFuel Postfix called on non-windup gravengine", LogMessageType.Warning);
             }
         }
     }

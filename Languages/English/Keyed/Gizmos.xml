@@ -5,4 +5,8 @@
   <CommandGLWWindupDesc>Warming up the grav engine will enable a GravLaunch. Be prepared; once the warm-up sequence completes, you will only have a small window to initiate the actual GravLaunch.</CommandGLWWindupDesc>
   <CommandGLWWindupDescStartingUp>The grav engine is currently warming up. The warm-up sequence will complete in {0}.</CommandGLWWindupDescStartingUp>
   <CommandGLWWindupDescStartedUp>The grav engine is currently warmed up. You have {0} to initiate GravLaunch.</CommandGLWWindupDescStartedUp>
+  <CommandGLWWindupDescCooldown>The grav engine is cooling down. You cannot begin the warm-up sequence for another {0}.</CommandGLWWindupDescCooldown>
+  
+  <CommandGLWAbort>Abort GravLaunch Warm-up Sequence</CommandGLWAbort>
+  <CommandGLWAbortDesc>Abort the current GravLaunch Warm-up Sequence. The grav engine will immediately enter its cooldown phase, after which you will be able to initiate the Warm-Up sequence again.\n\nThe cooldown phase will last for {0}.</CommandGLWAbortDesc>
 </LanguageData>

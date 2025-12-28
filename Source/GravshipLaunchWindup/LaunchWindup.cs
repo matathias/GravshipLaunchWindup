@@ -18,11 +18,13 @@ namespace GravshipLaunchWindup
         {
             Dormant,
             Starting,
-            Started
+            Started,
+            Cooldown
         }
         public StartupPhase phase = StartupPhase.Dormant;
         public int WindupCompletionTick = 0;
         public int LaunchTimeoutTick = 0;
+        public int WindupCooldownTick = 0;
         //TODO: get startup texture
         private static readonly Texture2D WindupCommandTex = ContentFinder<Texture2D>.Get("UI/Commands/GravStartup");
 
@@ -32,6 +34,7 @@ namespace GravshipLaunchWindup
             Scribe_Values.Look(ref phase, "startupphase", StartupPhase.Dormant);
             Scribe_Values.Look(ref WindupCompletionTick, "windupcompletiontick", -1);
             Scribe_Values.Look(ref LaunchTimeoutTick, "launchtimeouttick", -1);
+            Scribe_Values.Look(ref WindupCooldownTick, "windupcooldowntick", -1);
         }
 
         public AcceptanceReport CanUseNow()
@@ -47,6 +50,10 @@ namespace GravshipLaunchWindup
             else if (phase == StartupPhase.Started)
             {
                 return new AcceptanceReport("CommandGLWWindupDescStartedUp".Translate((LaunchTimeoutTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)));
+            }
+            else if (phase == StartupPhase.Cooldown)
+            {
+                return new AcceptanceReport("CommandGLWWindupDescCooldown".Translate((WindupCooldownTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)));
             }
             return AcceptanceReport.WasAccepted;
         }
@@ -79,6 +86,21 @@ namespace GravshipLaunchWindup
             }
             yield return command_action;
 
+            if (phase == StartupPhase.Starting)
+            {
+                Command_Action abort_warmup_action = new Command_Action
+                {
+                    defaultLabel = "CommandGLWAbort".Translate(this),
+                    defaultDesc = "CommandGLWAbortDesc".Translate(GetPostLaunchExpiryCooldown().ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)),
+                    icon = WindupCommandTex,
+                    action = delegate
+                    {
+                        LaunchExpiryCooldown(true);
+                    }
+                };
+                yield return abort_warmup_action;
+            }
+
             if (DebugSettings.ShowDevGizmos)
             {
                 yield return new Command_Action
@@ -97,19 +119,30 @@ namespace GravshipLaunchWindup
                         CompleteStartup(true);
                     }
                 };
+                yield return new Command_Action
+                {
+                    defaultLabel = "DEV: Close Launch Window",
+                    action = delegate
+                    {
+                        LaunchExpiryCooldown(false, true);
+                    }
+                };
+                yield return new Command_Action
+                {
+                    defaultLabel = "DEV: End Cooldown",
+                    action = delegate
+                    {
+                        LaunchTimersReset(true);
+                    }
+                };
             }
         }
 
         private void BeginStartup(bool force = false)
         {
-            if (!force && phase == StartupPhase.Starting)
+            if (!force && phase != StartupPhase.Dormant)
             {
-                DebugUtility.DebugLog("Called BeginStartup when windup has already been started");
-                return;
-            }
-            else if (!force && phase == StartupPhase.Started)
-            {
-                DebugUtility.DebugLog("Called BeginStartup when windup has already been completed");
+                DebugUtility.DebugLog($"Called BeginStartup in wrong phase: {phase}", LogMessageType.Warning);
                 return;
             }
             phase = StartupPhase.Starting;
@@ -121,14 +154,9 @@ namespace GravshipLaunchWindup
 
         private void CompleteStartup(bool force = false)
         {
-            if (!force && phase == StartupPhase.Dormant)
+            if (!force && phase != StartupPhase.Starting)
             {
-                DebugUtility.DebugLog("Called CompleteStartup when windup hasn't been started");
-                return;
-            }
-            else if (!force && phase == StartupPhase.Started)
-            {
-                DebugUtility.DebugLog("Called CompleteStartup when windup has already been completed");
+                DebugUtility.DebugLog($"Called CompleteStartup in wrong phase: {phase}", LogMessageType.Warning);
                 return;
             }
             phase = StartupPhase.Started;
@@ -145,22 +173,79 @@ namespace GravshipLaunchWindup
             }
         }
 
-        public void LaunchTimersReset(bool timedOut)
+        private void LaunchExpiryCooldown(bool earlyEject = false, bool force = false)
+        {
+            if (!force && !earlyEject && phase != StartupPhase.Started)
+            {
+                DebugUtility.DebugLog($"Called LaunchExpiryCooldown in wrong phase: {phase}", LogMessageType.Warning);
+            }
+            phase = StartupPhase.Cooldown;
+            int cooldownTick = GetPostLaunchExpiryCooldown();
+
+            /* If the cooldown phase has 0 length (which would happen if the player set it so in the settings), then
+             * just jumpt straight to reseting the timers. */
+            if (cooldownTick == 0)
+            {
+                LaunchTimersReset(true, true);
+            }
+
+            WindupCooldownTick = Find.TickManager.TicksGame + cooldownTick;
+
+            if (earlyEject)
+            {
+                if (GLWSettings.sendLetters)
+                {
+                    Find.LetterStack.ReceiveLetter("glwEjectedLaunchLetterLabel".Translate(), "glwEjectedLaunchLetterDesc".Translate((cooldownTick).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)), LetterDefOf.NeutralEvent);
+                }
+                else
+                {
+                    Messages.Message("glwEjectedLaunchMessage".Translate((cooldownTick).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)), MessageTypeDefOf.NeutralEvent);
+                }
+            }
+            else
+            {
+                if (GLWSettings.sendLetters)
+                {
+                    Find.LetterStack.ReceiveLetter("glwMissedLaunchLetterLabel".Translate(), "glwMissedLaunchLetterDesc".Translate((cooldownTick).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)), LetterDefOf.ThreatSmall);
+                }
+                else
+                {
+                    Messages.Message("glwMissedLaunchMessage".Translate((cooldownTick).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)), MessageTypeDefOf.ThreatSmall);
+                }
+            }
+        }
+
+        public void LaunchTimersReset(bool timedOut, bool noCooldownPhase = false)
         {
             phase = StartupPhase.Dormant;
             WindupCompletionTick = -1;
             LaunchTimeoutTick = -1;
+            WindupCooldownTick = -1;
 
             DebugUtility.DebugLog($"Reseting startup and launch timeout timers. Timed out: {timedOut}");
             if (timedOut)
             {
-                if (GLWSettings.sendLetters)
+                if (noCooldownPhase)
                 {
-                    Find.LetterStack.ReceiveLetter("glwLaunchTimersResetLabel".Translate(), "glwLaunchTimersResetDesc".Translate(), LetterDefOf.ThreatSmall);
+                    if (GLWSettings.sendLetters)
+                    {
+                        Find.LetterStack.ReceiveLetter("glwMissedLaunchLetterLabel".Translate(), "glwMissedLaunchLetterDesc2".Translate(), LetterDefOf.ThreatSmall);
+                    }
+                    else
+                    {
+                        Messages.Message("glwLaunchTimersResetMessage".Translate(), MessageTypeDefOf.NegativeEvent);
+                    }
                 }
                 else
                 {
-                    Messages.Message("glwLaunchTimersResetMessage".Translate(), MessageTypeDefOf.NegativeEvent);
+                    if (GLWSettings.sendLetters)
+                    {
+                        Find.LetterStack.ReceiveLetter("glwLaunchTimersResetLabel".Translate(), "glwLaunchTimersResetDesc".Translate(), LetterDefOf.NeutralEvent);
+                    }
+                    else
+                    {
+                        Messages.Message("glwLaunchTimersResetMessage".Translate(), MessageTypeDefOf.NeutralEvent);
+                    }
                 }
             }
         }
@@ -172,6 +257,10 @@ namespace GravshipLaunchWindup
                 CompleteStartup();
             }
             if (phase == StartupPhase.Started && Find.TickManager.TicksGame >= LaunchTimeoutTick)
+            {
+                LaunchExpiryCooldown();
+            }
+            if (phase == StartupPhase.Cooldown && Find.TickManager.TicksGame >= WindupCooldownTick)
             {
                 LaunchTimersReset(true);
             }
@@ -234,6 +323,36 @@ namespace GravshipLaunchWindup
                 launchwindow = GLWSettings.launchwindow * GenDate.TicksPerHour;
             }
             return launchwindow;
+        }
+
+        private int GetPostLaunchExpiryCooldown()
+        {
+            int cooldownticks = 0;
+            if (GLWSettings.VGEActive)
+            {
+                if (def.defName == "VGE_GravjumperEngine")
+                {
+                    cooldownticks = GLWSettings.windupcooldown_jumper * GenDate.TicksPerHour;
+                }
+                else if (def.defName == "GravEngine")
+                {
+                    cooldownticks = GLWSettings.windupcooldown * GenDate.TicksPerHour;
+                }
+                else if (def.defName == "VGE_GravhulkEngine")
+                {
+                    cooldownticks = GLWSettings.windupcooldown_hulk * GenDate.TicksPerHour;
+                }
+                else
+                {
+                    DebugUtility.DebugLog("VGE detected as active, but could not resolve grav engine defName. Using default windupcooldown", LogMessageType.Warning);
+                    cooldownticks = GLWSettings.windupcooldown * GenDate.TicksPerHour;
+                }
+            }
+            else
+            {
+                cooldownticks = GLWSettings.windupcooldown * GenDate.TicksPerHour;
+            }
+            return cooldownticks;
         }
     }
 }
