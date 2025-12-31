@@ -52,7 +52,7 @@ namespace GravshipLaunchWindup
 
         public override string GetLabel()
         {
-            return "glwAlertStartupSequence".Translate() + ": " + (StartupTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false);
+            return "glwAlertStartupSequence".Translate() + ": " + (StartupTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false);
         }
     }
 
@@ -83,7 +83,7 @@ namespace GravshipLaunchWindup
 
         public override string GetLabel()
         {
-            return "glwAlertLaunchWindow".Translate() + ": " + (LaunchTimeoutTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false);
+            return "glwAlertLaunchWindow".Translate() + ": " + (LaunchTimeoutTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false);
         }
 
         public override TaggedString GetExplanation()
@@ -105,7 +105,7 @@ namespace GravshipLaunchWindup
 
         public override string GetLabel()
         {
-            return "glwAlertCooldown".Translate() + ": " + (CooldownTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false);
+            return "glwAlertCooldown".Translate() + ": " + (CooldownTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false);
         }
     }
 }

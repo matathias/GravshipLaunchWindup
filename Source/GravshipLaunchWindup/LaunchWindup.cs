@@ -45,15 +45,15 @@ namespace GravshipLaunchWindup
             }
             else if (phase == StartupPhase.Starting)
             {
-                return new AcceptanceReport("CommandGLWWindupDescStartingUp".Translate((WindupCompletionTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)));
+                return new AcceptanceReport("CommandGLWWindupDescStartingUp".Translate((WindupCompletionTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false)));
             }
             else if (phase == StartupPhase.Started)
             {
-                return new AcceptanceReport("CommandGLWWindupDescStartedUp".Translate((LaunchTimeoutTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)));
+                return new AcceptanceReport("CommandGLWWindupDescStartedUp".Translate((LaunchTimeoutTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false)));
             }
             else if (phase == StartupPhase.Cooldown)
             {
-                return new AcceptanceReport("CommandGLWWindupDescCooldown".Translate((WindupCooldownTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)));
+                return new AcceptanceReport("CommandGLWWindupDescCooldown".Translate((WindupCooldownTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false)));
             }
             return AcceptanceReport.WasAccepted;
         }
@@ -91,7 +91,7 @@ namespace GravshipLaunchWindup
                 Command_Action abort_warmup_action = new Command_Action
                 {
                     defaultLabel = "CommandGLWAbort".Translate(this),
-                    defaultDesc = "CommandGLWAbortDesc".Translate(GetPostLaunchExpiryCooldown().ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)),
+                    defaultDesc = "CommandGLWAbortDesc".Translate(GetPostLaunchExpiryCooldown().ToStringTicksToPeriod(allowSeconds: false, shortForm: false)),
                     icon = WindupCommandTex,
                     action = delegate
                     {
@@ -149,7 +149,7 @@ namespace GravshipLaunchWindup
             int winduptime = GetWindupTime();
             WindupCompletionTick = Find.TickManager.TicksGame + winduptime;
 
-            Messages.Message("glwBeginStartupMessage".Translate((winduptime).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)), MessageTypeDefOf.NeutralEvent);
+            Messages.Message("glwBeginStartupMessage".Translate((winduptime).ToStringTicksToPeriod(allowSeconds: false, shortForm: false)), MessageTypeDefOf.NeutralEvent);
         }
 
         private void CompleteStartup(bool force = false)
@@ -165,11 +165,11 @@ namespace GravshipLaunchWindup
 
             if (GLWSettings.sendLetters)
             {
-                Find.LetterStack.ReceiveLetter("glwCompleteStartupLetterLabel".Translate(), "glwCompleteStartupLetterDesc".Translate((launchwindow).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)), LetterDefOf.PositiveEvent);
+                Find.LetterStack.ReceiveLetter("glwCompleteStartupLetterLabel".Translate(), "glwCompleteStartupLetterDesc".Translate((launchwindow).ToStringTicksToPeriod(allowSeconds: false, shortForm: false)), LetterDefOf.PositiveEvent);
             }
             else
             {
-                Messages.Message("glwCompleteStartupMessage".Translate((launchwindow).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)), MessageTypeDefOf.NeutralEvent);
+                Messages.Message("glwCompleteStartupMessage".Translate((launchwindow).ToStringTicksToPeriod(allowSeconds: false, shortForm: false)), MessageTypeDefOf.NeutralEvent);
             }
         }
 
@@ -183,7 +183,7 @@ namespace GravshipLaunchWindup
             int cooldownTick = GetPostLaunchExpiryCooldown();
 
             /* If the cooldown phase has 0 length (which would happen if the player set it so in the settings), then
-             * just jumpt straight to reseting the timers. */
+             * just jump straight to reseting the timers. */
             if (cooldownTick == 0)
             {
                 LaunchTimersReset(true, true);
@@ -195,22 +195,22 @@ namespace GravshipLaunchWindup
             {
                 if (GLWSettings.sendLetters)
                 {
-                    Find.LetterStack.ReceiveLetter("glwEjectedLaunchLetterLabel".Translate(), "glwEjectedLaunchLetterDesc".Translate((cooldownTick).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)), LetterDefOf.NeutralEvent);
+                    Find.LetterStack.ReceiveLetter("glwEjectedLaunchLetterLabel".Translate(), "glwEjectedLaunchLetterDesc".Translate((cooldownTick).ToStringTicksToPeriod(allowSeconds: false, shortForm: false)), LetterDefOf.NeutralEvent);
                 }
                 else
                 {
-                    Messages.Message("glwEjectedLaunchMessage".Translate((cooldownTick).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)), MessageTypeDefOf.NeutralEvent);
+                    Messages.Message("glwEjectedLaunchMessage".Translate((cooldownTick).ToStringTicksToPeriod(allowSeconds: false, shortForm: false)), MessageTypeDefOf.NeutralEvent);
                 }
             }
             else
             {
                 if (GLWSettings.sendLetters)
                 {
-                    Find.LetterStack.ReceiveLetter("glwMissedLaunchLetterLabel".Translate(), "glwMissedLaunchLetterDesc".Translate((cooldownTick).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)), LetterDefOf.ThreatSmall);
+                    Find.LetterStack.ReceiveLetter("glwMissedLaunchLetterLabel".Translate(), "glwMissedLaunchLetterDesc".Translate((cooldownTick).ToStringTicksToPeriod(allowSeconds: false, shortForm: false)), LetterDefOf.ThreatSmall);
                 }
                 else
                 {
-                    Messages.Message("glwMissedLaunchMessage".Translate((cooldownTick).ToStringTicksToPeriod(allowSeconds: false, shortForm: false, canUseDecimals: false)), MessageTypeDefOf.ThreatSmall);
+                    Messages.Message("glwMissedLaunchMessage".Translate((cooldownTick).ToStringTicksToPeriod(allowSeconds: false, shortForm: false)), MessageTypeDefOf.ThreatSmall);
                 }
             }
         }

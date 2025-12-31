@@ -11,5 +11,5 @@
   <glwEjectedLaunchLetterDesc>You have aborted a gravlaunch warm-up sequence. The grav engine will now need to cool off for {0} before you can initiate the warm-up sequence again.</glwEjectedLaunchLetterDesc>
   
   <glwLaunchTimersResetLabel>Post-GravLaunch Cooldown</glwLaunchTimersResetLabel>
-  <glwLaunchTimersResetDesc>Your grav engine has finished cooling down after a missed launch window. You can now initiate the warm-up sequence again.</glwLaunchTimersResetDesc>
+  <glwLaunchTimersResetDesc>Your grav engine has finished cooling down. You can now initiate the warm-up sequence again.</glwLaunchTimersResetDesc>
 </LanguageData>
