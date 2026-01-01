@@ -243,6 +243,7 @@ namespace GravshipLaunchWindup
             if (cooldownTick == 0)
             {
                 LaunchTimersReset(true, true);
+                return;
             }
 
             WindupCooldownTick = Find.TickManager.TicksGame + cooldownTick;
@@ -458,7 +459,7 @@ namespace GravshipLaunchWindup
                 }
                 else
                 {
-                    DebugUtility.DebugLog("VGE detected as active, but could not resolve grav engine defName. Using default windupcooldown", LogMessageType.Warning);
+                    DebugUtility.DebugLog("VGE detected as active, but could not resolve grav engine defName. Using default el_extraExpiryCooldown", LogMessageType.Warning);
                     cooldownticks = GLWSettings.el_extraExpiryCooldown * GenDate.TicksPerHour;
                 }
             }
@@ -487,7 +488,7 @@ namespace GravshipLaunchWindup
                 }
                 else
                 {
-                    DebugUtility.DebugLog("VGE detected as active, but could not resolve grav engine defName. Using default windupcooldown", LogMessageType.Warning);
+                    DebugUtility.DebugLog("VGE detected as active, but could not resolve grav engine defName. Using default el_emergencyCooldown", LogMessageType.Warning);
                     cooldownticks = GLWSettings.el_emergencyCooldown * GenDate.TicksPerHour;
                 }
             }
