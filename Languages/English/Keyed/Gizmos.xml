@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-  <CommandGLWWindup>Initiate GravLaunch Warm-up Sequence</CommandGLWWindup>
-  <CommandGLWWindupDescOnCooldown>You cannot initate the warm-up sequence while the grav engine is cooling down.</CommandGLWWindupDescOnCooldown>
-  <CommandGLWWindupDesc>Warming up the grav engine will enable a GravLaunch. Be prepared; once the warm-up sequence completes, you will only have a small window to initiate the actual GravLaunch.</CommandGLWWindupDesc>
-  <CommandGLWWindupDescStartingUp>The grav engine is currently warming up. The warm-up sequence will complete in {0}.</CommandGLWWindupDescStartingUp>
-  <CommandGLWWindupDescStartedUp>The grav engine is currently warmed up. You have {0} to initiate GravLaunch.</CommandGLWWindupDescStartedUp>
-  <CommandGLWWindupDescCooldown>The grav engine is cooling down. You cannot begin the warm-up sequence for another {0}.</CommandGLWWindupDescCooldown>
+  <CommandGLWWindup>Initiate GravLaunch Startup Sequence</CommandGLWWindup>
+  <CommandGLWWindupDescOnCooldown>You cannot initate the startup sequence while the grav engine is cooling down.</CommandGLWWindupDescOnCooldown>
+  <CommandGLWWindupDesc>Starting up the grav engine will enable a GravLaunch. Be prepared; once the startup sequence completes, you will only have a small window to initiate the actual GravLaunch.</CommandGLWWindupDesc>
+  <CommandGLWWindupDescStartingUp>The grav engine is currently starting up. The startup sequence will complete in {0}.</CommandGLWWindupDescStartingUp>
+  <CommandGLWWindupDescStartedUp>The grav engine is currently started up. You have {0} to initiate GravLaunch.</CommandGLWWindupDescStartedUp>
+  <CommandGLWWindupDescCooldown>The grav engine is cooling down. You cannot begin the startup sequence for another {0}.</CommandGLWWindupDescCooldown>
+  <CommandGLWWindupDescOnEmergencyCooldown>The grav engine is still cooling down from a recent Emergency Launch. You cannot begin the startup sequence for another {0}.</CommandGLWWindupDescOnEmergencyCooldown>
   
-  <CommandGLWAbort>Abort GravLaunch Warm-up Sequence</CommandGLWAbort>
-  <CommandGLWAbortDesc>Abort the current GravLaunch Warm-up Sequence. The grav engine will immediately enter its cooldown phase, after which you will be able to initiate the Warm-Up sequence again.\n\nThe cooldown phase will last for {0}.</CommandGLWAbortDesc>
+  <CommandGLWAbort>Abort GravLaunch Startup Sequence</CommandGLWAbort>
+  <CommandGLWAbortDesc>Abort the current GravLaunch Startup Sequence. The grav engine will immediately enter its cooldown phase, after which you will be able to initiate the Startup sequence again.\n\nThe cooldown phase will last for {0}.</CommandGLWAbortDesc>
+  
+  <CommandGLWWindupEmergency>Initiate Emergency Startup</CommandGLWWindupEmergency>
+  <CommandGLWWindupEmergencyDesc>Instantly startup the grav engine, allowing an immediate launch.\n\nThis procedure puts immense stress on the grav engine. Any GravLaunch that takes place immediately after an Emergency Startup will be of a much worse quality than a normal GravLaunch, and the post-landing engine cooldown will take longer. Additionally, the cooldown phase after a missed Emergency Launch Window is much longer than normal, and Emergencey Startup itself will not be usable for another {0}.\n\nInitiate Emergency Startup at your own peril.</CommandGLWWindupEmergencyDesc>
+  <CommandGLWEmergencyLaunchDescOnCooldown>Due to a recent Emergency Startup, you cannot initiate another Emergency Startup for another {0}.</CommandGLWEmergencyLaunchDescOnCooldown>
 </LanguageData>

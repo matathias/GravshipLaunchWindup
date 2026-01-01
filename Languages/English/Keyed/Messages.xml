@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
 
-  <glwBeginStartupMessage>GravLaunch Warm-up Sequence Initiated. Time to launch window: {0}</glwBeginStartupMessage>
+  <glwBeginStartupMessage>GravLaunch Startup Sequence Initiated. Time to launch window: {0}</glwBeginStartupMessage>
   
-  <glwCompleteStartupMessage>GravLaunch Warm-up Sequence Complete. Launch window: {0}</glwCompleteStartupMessage>
+  <glwCompleteStartupMessage>GravLaunch Startup Sequence Complete. Launch window: {0}</glwCompleteStartupMessage>
   
   <glwMissedLaunchMessage>GravLaunch window expired. Grav engine entering cooldown.</glwMissedLaunchMessage>
   
-  <glwEjectedLaunchMessage>GravLaunch Warm-up Sequence aborted. Grav engine entering cooldown.</glwEjectedLaunchMessage>
+  <glwEjectedLaunchMessage>GravLaunch Startup Sequence aborted. Grav engine entering cooldown.</glwEjectedLaunchMessage>
   
-  <glwLaunchTimersResetMessage>GravLaunch Warm-up Sequence available.</glwLaunchTimersResetMessage>
+  <glwLaunchTimersResetMessage>GravLaunch Startup Sequence available.</glwLaunchTimersResetMessage>
   
-  <glwWindupNotStarted>Grav Engine has not been warmed up. Select the engine to initiate Warm-Up.</glwWindupNotStarted>
-  <glwWindupNotComplete>GravLaunch warm-up has not completed. Your launch window is in {0}.</glwWindupNotComplete>
-  <glwWindupOnCooldown>Grav Engine is cooling down. You can restart the Warm-Up process in {0}.</glwWindupOnCooldown>
+  <glwWindupNotStarted>Grav Engine has not been started up. Select the engine to initiate StartUp.</glwWindupNotStarted>
+  <glwWindupNotComplete>GravLaunch Startup has not completed. Your launch window is in {0}.</glwWindupNotComplete>
+  <glwWindupOnCooldown>Grav Engine is cooling down. You can restart the StartUp process in {0}.</glwWindupOnCooldown>
+  
+  <glwEmergencyStartupMessage>Emergency Startup initiated. You cannot use Emergency Startup again for another {0}.</glwEmergencyStartupMessage>
   
 </LanguageData>

@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-  <glwwinduptimejumper>Length of warm-up sequence in hours for GravJumpers</glwwinduptimejumper>
-  <glwlaunchwindowjumper>Length of gravlaunch window in hours for GravJumpers</glwlaunchwindowjumper>
-  <glwwindowcooldownjumper>Length of post-launch window cooldown in hours for GravJumpers</glwwindowcooldownjumper>
+  <glwenableEmergencyLaunches>Enable Emergency Startup</glwenableEmergencyLaunches>
+  <glwExtendLaunchWindowExpiryCooldown>Extend the Post-Launch Window Expiry Cooldown for Emergency Startups</glwExtendLaunchWindowExpiryCooldown>
+  <glwEmergencyStartupRitualFactor>Emergency Startup quality offset (0-1. Is subtracted from the total ritual quality)</glwEmergencyStartupRitualFactor>
+
+  <glwgravjumpersettings>GravJumper Settings</glwgravjumpersettings>
+  <glwgravshipsettings>GravShip Settings</glwgravshipsettings>
+  <glwgravhulksettings>GravHulk Settings</glwgravhulksettings>
   
-  <glwwinduptime>Length of warm-up sequence in hours for GravShips</glwwinduptime>
-  <glwlaunchwindow>Length of gravlaunch window in hours for GravShips</glwlaunchwindow>
-  <glwwindowcooldown>Length of post-launch window cooldown in hours for GravShips</glwwindowcooldown>
+  <glwAllTimesInHours>All times are in hours</glwAllTimesInHours>
   
-  <glwwinduptimehulk>Length of warm-up sequence in hours for GravHulks</glwwinduptimehulk>
-  <glwlaunchwindowhulk>Length of gravlaunch window in hours for GravHulks</glwlaunchwindowhulk>
-  <glwwindowcooldownhulk>Length of post-launch window cooldown in hours for GravHulks</glwwindowcooldownhulk>
+  <glwwinduptime>Length of startup sequence</glwwinduptime>
+  <glwlaunchwindow>Length of GravLaunch window</glwlaunchwindow>
+  <glwwindowcooldown>Length of cooldown period after GravLaunch window expiry</glwwindowcooldown>
+  <glwelEmergencyCooldown>Length of cooldown period between Emergency Startups</glwelEmergencyCooldown>
+  <glwelExtraExpiryCooldown>Length of extra cooldown after GravLaunch window expiry for Emergency Startups</glwelExtraExpiryCooldown>
   
-  <glwsendLetters>Send letters when warm-up sequence finishes or when launch window closes</glwsendLetters>
-  <glwshowAlerts>Show alerts for warm-up sequence and launch window</glwshowAlerts>
+  <glwsendLetters>Send letters when startup sequence finishes or when launch window closes</glwsendLetters>
+  <glwshowAlerts>Show alerts for startup sequence and launch window</glwshowAlerts>
   <glwprintDebug>Enable debug logging</glwprintDebug>
+  
+  <glwemergencylaunchheader>Emergency Launch Settings</glwemergencylaunchheader>
+  <glwuseemergencylaunch>Enable Emergency Launches</glwuseemergencylaunch>
+  
+  <glwResetAll>Reset all values to default</glwResetAll>
 </LanguageData>

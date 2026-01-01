@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+  <!-- Base GravEngine -->
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/RitualOutcomeEffectDef[defName="GravshipLaunch"]/comps</xpath>
+    <value>
+      <li Class="GravshipLaunchWindup.RitualOutcomeComp_EmergencyGravLaunch">
+        <label>emergency launch</label>
+      </li>
+    </value>
+  </Operation>
+    <!-- Vanilla Gravships Extended Compatibility -->
+    <Operation Class="PatchOperationFindMod">
+        <mods>
+            <li>Vanilla Gravship Expanded - Chapter 1</li>
+        </mods>
+        <match Class="PatchOperationSequence">
+            <operations>
+                <li Class="PatchOperationAdd">
+					<xpath>Defs/RitualOutcomeEffectDef[defName="VGE_GravjumperLaunch"]/comps</xpath>
+					<value>
+					  <li Class="GravshipLaunchWindup.RitualOutcomeComp_EmergencyGravLaunch">
+						<label>emergency launch</label>
+					  </li>
+					</value>
+                </li>
+                <li Class="PatchOperationAdd">
+					<xpath>Defs/RitualOutcomeEffectDef[defName="VGE_GravhulkLaunch"]/comps</xpath>
+					<value>
+					  <li Class="GravshipLaunchWindup.RitualOutcomeComp_EmergencyGravLaunch">
+						<label>emergency launch</label>
+					  </li>
+					</value>
+                </li>
+            </operations>
+        </match>
+    </Operation>
+
+</Patch>

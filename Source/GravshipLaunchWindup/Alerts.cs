@@ -43,7 +43,7 @@ namespace GravshipLaunchWindup
         public int StartupTick => gravEngine?.WindupCompletionTick ?? 0;
         public override AlertReport GetReport()
         {
-            if (!GLWSettings.showAlerts || gravEngine == null || gravEngine.phase != Building_GravEngineWithWindup.StartupPhase.Starting)
+            if (!GLWSettings.showAlerts || gravEngine == null || gravEngine.Phase != Building_GravEngineWithWindup.StartupPhase.Starting)
             {
                 return AlertReport.Inactive;
             }
@@ -74,7 +74,7 @@ namespace GravshipLaunchWindup
         }
         public override AlertReport GetReport()
         {
-            if (!GLWSettings.showAlerts || gravEngine == null || gravEngine.phase != Building_GravEngineWithWindup.StartupPhase.Started)
+            if (!GLWSettings.showAlerts || gravEngine == null || gravEngine.Phase != Building_GravEngineWithWindup.StartupPhase.Started)
             {
                 return AlertReport.Inactive;
             }
@@ -96,7 +96,7 @@ namespace GravshipLaunchWindup
         public int CooldownTick => gravEngine?.WindupCooldownTick ?? 0;
         public override AlertReport GetReport()
         {
-            if (!GLWSettings.showAlerts || gravEngine == null || gravEngine.phase != Building_GravEngineWithWindup.StartupPhase.Cooldown)
+            if (!GLWSettings.showAlerts || gravEngine == null || gravEngine.Phase != Building_GravEngineWithWindup.StartupPhase.Cooldown)
             {
                 return AlertReport.Inactive;
             }

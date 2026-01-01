@@ -21,20 +21,28 @@ namespace GravshipLaunchWindup
             Started,
             Cooldown
         }
-        public StartupPhase phase = StartupPhase.Dormant;
+        private StartupPhase phase = StartupPhase.Dormant;
+        private bool usedEmergencyStartup = false;
         public int WindupCompletionTick = 0;
         public int LaunchTimeoutTick = 0;
         public int WindupCooldownTick = 0;
-        //TODO: get startup texture
+        public int EmergencyLaunchExtraEngineCooldownTick = 0;
+        public int EmergencyLaunchCooldownTick = 0;
         private static readonly Texture2D WindupCommandTex = ContentFinder<Texture2D>.Get("UI/Commands/GravStartup");
+
+        public StartupPhase Phase => phase;
+        public bool EmergencyConfiguration => usedEmergencyStartup;
 
         public override void ExposeData()
         {
             base.ExposeData();
             Scribe_Values.Look(ref phase, "startupphase", StartupPhase.Dormant);
-            Scribe_Values.Look(ref WindupCompletionTick, "windupcompletiontick", -1);
-            Scribe_Values.Look(ref LaunchTimeoutTick, "launchtimeouttick", -1);
-            Scribe_Values.Look(ref WindupCooldownTick, "windupcooldowntick", -1);
+            Scribe_Values.Look(ref WindupCompletionTick, "windupcompletiontick", 0);
+            Scribe_Values.Look(ref LaunchTimeoutTick, "launchtimeouttick", 0);
+            Scribe_Values.Look(ref WindupCooldownTick, "windupcooldowntick", 0);
+            Scribe_Values.Look(ref EmergencyLaunchCooldownTick, "emergencylaunchcooldowntick", 0);
+            Scribe_Values.Look(ref usedEmergencyStartup, "usedemergencystartup", defaultValue: false);
+            Scribe_Values.Look(ref EmergencyLaunchExtraEngineCooldownTick, "emergencylaunchextraenginecooldowntick", 0);
         }
 
         public AcceptanceReport CanUseNow()
@@ -42,6 +50,10 @@ namespace GravshipLaunchWindup
             if (phase == StartupPhase.Dormant && cooldownCompleteTick > Find.TickManager.TicksGame)
             {
                 return new AcceptanceReport("CommandGLWWindupDescOnCooldown".Translate());
+            }
+            else if (phase == StartupPhase.Dormant && EmergencyLaunchExtraEngineCooldownTick > Find.TickManager.TicksGame)
+            {
+                return new AcceptanceReport("CommandGLWWindupDescOnEmergencyCooldown".Translate((EmergencyLaunchExtraEngineCooldownTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false)));
             }
             else if (phase == StartupPhase.Starting)
             {
@@ -54,6 +66,19 @@ namespace GravshipLaunchWindup
             else if (phase == StartupPhase.Cooldown)
             {
                 return new AcceptanceReport("CommandGLWWindupDescCooldown".Translate((WindupCooldownTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false)));
+            }
+            return AcceptanceReport.WasAccepted;
+        }
+
+        public AcceptanceReport CanUseNow_EmergencyLaunch()
+        {
+            if (cooldownCompleteTick > Find.TickManager.TicksGame)
+            {
+                return new AcceptanceReport("CommandGLWWindupDescOnCooldown".Translate());
+            }
+            else if (EmergencyLaunchCooldownTick > Find.TickManager.TicksGame)
+            {
+                return new AcceptanceReport("CommandGLWEmergencyLaunchDescOnCooldown".Translate((EmergencyLaunchCooldownTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false)));
             }
             return AcceptanceReport.WasAccepted;
         }
@@ -86,12 +111,33 @@ namespace GravshipLaunchWindup
             }
             yield return command_action;
 
+            if (phase != StartupPhase.Started && GLWSettings.el_enableEmergencyLaunches)
+            {
+                /* Emergency Launch button should only show up when regular launch isn't an option */
+                Command_Action emergency_launch = new Command_Action
+                {
+                    defaultLabel = "CommandGLWWindupEmergency".Translate(this),
+                    defaultDesc = "CommandGLWWindupEmergencyDesc".Translate(GetEmergencyLaunchCooldown().ToStringTicksToPeriod(allowSeconds: false, shortForm: false)),
+                    icon = WindupCommandTex,
+                    action = delegate
+                    {
+                        EmergencyLaunchStartup();
+                    }
+                };
+                AcceptanceReport acceptanceReportEmergency = CanUseNow_EmergencyLaunch();
+                if (!acceptanceReportEmergency.Accepted)
+                {
+                    emergency_launch.Disable(acceptanceReportEmergency.Reason);
+                }
+                yield return emergency_launch;
+            }
+
             if (phase == StartupPhase.Starting)
             {
                 Command_Action abort_warmup_action = new Command_Action
                 {
                     defaultLabel = "CommandGLWAbort".Translate(this),
-                    defaultDesc = "CommandGLWAbortDesc".Translate(GetPostLaunchExpiryCooldown().ToStringTicksToPeriod(allowSeconds: false, shortForm: false)),
+                    defaultDesc = "CommandGLWAbortDesc".Translate(GetPostLaunchExpiryCooldown(false).ToStringTicksToPeriod(allowSeconds: false, shortForm: false)),
                     icon = WindupCommandTex,
                     action = delegate
                     {
@@ -133,6 +179,16 @@ namespace GravshipLaunchWindup
                     action = delegate
                     {
                         LaunchTimersReset(true);
+                    }
+                };
+                yield return new Command_Action
+                {
+                    defaultLabel = "DEV: End Emergency Launch Cooldowns",
+                    action = delegate
+                    {
+                        usedEmergencyStartup = false;
+                        EmergencyLaunchCooldownTick = -1;
+                        EmergencyLaunchExtraEngineCooldownTick = -1;
                     }
                 };
             }
@@ -180,7 +236,7 @@ namespace GravshipLaunchWindup
                 DebugUtility.DebugLog($"Called LaunchExpiryCooldown in wrong phase: {phase}", LogMessageType.Warning);
             }
             phase = StartupPhase.Cooldown;
-            int cooldownTick = GetPostLaunchExpiryCooldown();
+            int cooldownTick = GetPostLaunchExpiryCooldown(true);
 
             /* If the cooldown phase has 0 length (which would happen if the player set it so in the settings), then
              * just jump straight to reseting the timers. */
@@ -247,6 +303,25 @@ namespace GravshipLaunchWindup
                         Messages.Message("glwLaunchTimersResetMessage".Translate(), MessageTypeDefOf.NeutralEvent);
                     }
                 }
+            }
+        }
+
+        private void EmergencyLaunchStartup()
+        {
+            /* Force the engine into the startup phase, set the emergency launch flag, and send the player a letter/notification */
+            CompleteStartup(true);
+            usedEmergencyStartup = true;
+
+            int emergencyCooldownTick = GetEmergencyLaunchCooldown();
+            EmergencyLaunchCooldownTick = Find.TickManager.TicksGame + emergencyCooldownTick;
+
+            if (GLWSettings.sendLetters)
+            {
+                Find.LetterStack.ReceiveLetter("glwEmergencyStartupLabel".Translate(), "glwEmergencyStartupDesc".Translate((emergencyCooldownTick).ToStringTicksToPeriod(allowSeconds: false, shortForm: false)), LetterDefOf.ThreatSmall);
+            }
+            else
+            {
+                Messages.Message("glwEmergencyStartupMessage".Translate((emergencyCooldownTick).ToStringTicksToPeriod(allowSeconds: false, shortForm: false)), MessageTypeDefOf.ThreatSmall);
             }
         }
 
@@ -325,7 +400,7 @@ namespace GravshipLaunchWindup
             return launchwindow;
         }
 
-        private int GetPostLaunchExpiryCooldown()
+        private int GetPostLaunchExpiryCooldown(bool resetEmergency)
         {
             int cooldownticks = 0;
             if (GLWSettings.VGEActive)
@@ -352,7 +427,92 @@ namespace GravshipLaunchWindup
             {
                 cooldownticks = GLWSettings.windupcooldown * GenDate.TicksPerHour;
             }
+
+            if (EmergencyConfiguration)
+            {
+                cooldownticks += GetEmergencyLaunchExtraExpiryCooldown(resetEmergency);
+            }
             return cooldownticks;
+        }
+        private int GetEmergencyLaunchExtraExpiryCooldown(bool resetEmergency)
+        {
+            if (resetEmergency)
+            {
+                DebugUtility.DebugLog("Reseting usedEmergencyStartup");
+                usedEmergencyStartup = false;
+            }
+            int cooldownticks = 0;
+            if (GLWSettings.VGEActive)
+            {
+                if (def.defName == "VGE_GravjumperEngine")
+                {
+                    cooldownticks = GLWSettings.el_extraExpiryCooldown_jumper * GenDate.TicksPerHour;
+                }
+                else if (def.defName == "GravEngine")
+                {
+                    cooldownticks = GLWSettings.el_extraExpiryCooldown * GenDate.TicksPerHour;
+                }
+                else if (def.defName == "VGE_GravhulkEngine")
+                {
+                    cooldownticks = GLWSettings.el_extraExpiryCooldown_hulk * GenDate.TicksPerHour;
+                }
+                else
+                {
+                    DebugUtility.DebugLog("VGE detected as active, but could not resolve grav engine defName. Using default windupcooldown", LogMessageType.Warning);
+                    cooldownticks = GLWSettings.el_extraExpiryCooldown * GenDate.TicksPerHour;
+                }
+            }
+            else
+            {
+                cooldownticks = GLWSettings.el_extraExpiryCooldown * GenDate.TicksPerHour;
+            }
+            return cooldownticks;
+        }
+        private int GetEmergencyLaunchCooldown()
+        {
+            int cooldownticks = 0;
+            if (GLWSettings.VGEActive)
+            {
+                if (def.defName == "VGE_GravjumperEngine")
+                {
+                    cooldownticks = GLWSettings.el_emergencyCooldown_jumper * GenDate.TicksPerHour;
+                }
+                else if (def.defName == "GravEngine")
+                {
+                    cooldownticks = GLWSettings.el_emergencyCooldown * GenDate.TicksPerHour;
+                }
+                else if (def.defName == "VGE_GravhulkEngine")
+                {
+                    cooldownticks = GLWSettings.el_emergencyCooldown_hulk * GenDate.TicksPerHour;
+                }
+                else
+                {
+                    DebugUtility.DebugLog("VGE detected as active, but could not resolve grav engine defName. Using default windupcooldown", LogMessageType.Warning);
+                    cooldownticks = GLWSettings.el_emergencyCooldown * GenDate.TicksPerHour;
+                }
+            }
+            else
+            {
+                cooldownticks = GLWSettings.el_emergencyCooldown * GenDate.TicksPerHour;
+            }
+            return cooldownticks;
+        }
+
+        public void SetPostLaunchEmergencyCooldown()
+        {
+            if (GLWSettings.el_extendPostLaunchCooldown && EmergencyConfiguration)
+            {
+                DebugUtility.DebugLog("Post-Emergency-Startup Landing, start. Extending cooldown");
+                int extraCooldownTicks = GetEmergencyLaunchExtraExpiryCooldown(true);
+                EmergencyLaunchExtraEngineCooldownTick = cooldownCompleteTick + extraCooldownTicks;
+                if (EmergencyLaunchExtraEngineCooldownTick > EmergencyLaunchCooldownTick)
+                {
+                    /* It'd be silly if the extra grav engine cooldown time was longer than the cooldown for emergency startup itself. So in this case, extend the cooldown for
+                     * Emergency Startup to longer than the grav engine cooldown. */
+                    EmergencyLaunchCooldownTick = cooldownCompleteTick + GetEmergencyLaunchCooldown();
+                }
+                DebugUtility.DebugLog($"Post-Emergency-Startup Landing complete. Cooldown tick: {cooldownCompleteTick} extra ticks: {extraCooldownTicks} extra cooldown tick: {EmergencyLaunchExtraEngineCooldownTick}");
+            }
         }
     }
 }

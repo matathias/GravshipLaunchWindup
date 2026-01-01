@@ -27,15 +27,15 @@ namespace GravshipLaunchWindup
             {
                 if (__instance is Building_GravEngineWithWindup engineW)
                 {
-                    if (engineW.phase == Building_GravEngineWithWindup.StartupPhase.Dormant)
+                    if (engineW.Phase == Building_GravEngineWithWindup.StartupPhase.Dormant)
                     {
                         __result = new AcceptanceReport("glwWindupNotStarted".Translate());
                     }
-                    else if (engineW.phase == Building_GravEngineWithWindup.StartupPhase.Starting)
+                    else if (engineW.Phase == Building_GravEngineWithWindup.StartupPhase.Starting)
                     {
                         __result = new AcceptanceReport("glwWindupNotComplete".Translate((engineW.WindupCompletionTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false)));
                     }
-                    else if (engineW.phase == Building_GravEngineWithWindup.StartupPhase.Cooldown)
+                    else if (engineW.Phase == Building_GravEngineWithWindup.StartupPhase.Cooldown)
                     {
                         __result = new AcceptanceReport("glwWindupOnCooldown".Translate((engineW.WindupCooldownTick - Find.TickManager.TicksGame).ToStringTicksToPeriod(allowSeconds: false, shortForm: false)));
                     }
@@ -55,6 +55,7 @@ namespace GravshipLaunchWindup
             if(__instance is Building_GravEngineWithWindup engineW)
             {
                 engineW.LaunchTimersReset(false);
+                engineW.SetPostLaunchEmergencyCooldown();
             }
             else
             {

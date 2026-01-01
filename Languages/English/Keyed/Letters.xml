@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-  <glwCompleteStartupLetterLabel>GravLaunch Warm-up Sequence Complete</glwCompleteStartupLetterLabel>
-  <glwCompleteStartupLetterDesc>Your launch window closes in {0}.\n\nIf you do not launch before the end of the launch window, then you will have to complete the warm-up sequence again.</glwCompleteStartupLetterDesc>
+  <glwCompleteStartupLetterLabel>GravLaunch Startup Sequence Complete</glwCompleteStartupLetterLabel>
+  <glwCompleteStartupLetterDesc>Your launch window closes in {0}.\n\nIf you do not launch before the end of the launch window, then you will have to complete the startup sequence again.</glwCompleteStartupLetterDesc>
   
   <glwMissedLaunchLetterLabel>Missed GravLaunch Window</glwMissedLaunchLetterLabel>
-  <glwMissedLaunchLetterDesc>You have missed your launch window. The grav engine will now need to cool off for {0} before you can initiate the warm-up sequence again.</glwMissedLaunchLetterDesc>
-  <glwMissedLaunchLetterDesc2>You have missed your launch window. You will need to complete the warm-up sequence again before you can launch.</glwMissedLaunchLetterDesc2>
+  <glwMissedLaunchLetterDesc>You have missed your launch window. The grav engine will now need to cool off for {0} before you can initiate the startup sequence again.</glwMissedLaunchLetterDesc>
+  <glwMissedLaunchLetterDesc2>You have missed your launch window. You will need to complete the startup sequence again before you can launch.</glwMissedLaunchLetterDesc2>
   
-  <glwEjectedLaunchLetterLabel>Aborted GravLaunch Warm-up</glwEjectedLaunchLetterLabel>
-  <glwEjectedLaunchLetterDesc>You have aborted a gravlaunch warm-up sequence. The grav engine will now need to cool off for {0} before you can initiate the warm-up sequence again.</glwEjectedLaunchLetterDesc>
+  <glwEjectedLaunchLetterLabel>Aborted GravLaunch Startup</glwEjectedLaunchLetterLabel>
+  <glwEjectedLaunchLetterDesc>You have aborted a gravlaunch startup sequence. The grav engine will now need to cool off for {0} before you can initiate the startup sequence again.</glwEjectedLaunchLetterDesc>
   
   <glwLaunchTimersResetLabel>Post-GravLaunch Cooldown</glwLaunchTimersResetLabel>
-  <glwLaunchTimersResetDesc>Your grav engine has finished cooling down. You can now initiate the warm-up sequence again.</glwLaunchTimersResetDesc>
+  <glwLaunchTimersResetDesc>Your grav engine has finished cooling down. You can now initiate the startup sequence again.</glwLaunchTimersResetDesc>
+  
+  <glwEmergencyStartupLabel>Emergency Grav Engine Startup</glwEmergencyStartupLabel>
+  <glwEmergencyStartupDesc>An emergency startup has instantly prepared your grav engine for launch.\n\nIf you launch during this window, then the quality of the GravLaunch will be much lower than normal, and the post-landing grav engine cooldown will take much longer.\n\nIf you choose not to launch during this window, then your next GravLaunch will proceed as normal. However, the cooldown phase after this launch window expires will be much longer than normal.\n\nRegardless of whether or not you launch, you will not be able to use Emergency Startup again for another {0}.</glwEmergencyStartupDesc>
 </LanguageData>
