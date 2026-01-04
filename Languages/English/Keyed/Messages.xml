@@ -17,4 +17,6 @@
   
   <glwEmergencyStartupMessage>Emergency Startup initiated. You cannot use Emergency Startup again for another {0}.</glwEmergencyStartupMessage>
   
+  <GravshipReadyToLaunch>{0}'s grav engine has cooled down. You can now initiate Startup at any time.</GravshipReadyToLaunch>
+  
 </LanguageData>

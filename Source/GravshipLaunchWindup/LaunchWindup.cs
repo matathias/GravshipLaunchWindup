@@ -328,6 +328,7 @@ namespace GravshipLaunchWindup
 
         protected override void Tick()
         {
+            base.Tick();
             if (phase == StartupPhase.Starting && Find.TickManager.TicksGame >= WindupCompletionTick)
             {
                 CompleteStartup();
